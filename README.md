@@ -4,6 +4,7 @@ A web application is also available (https://inifapcenidraspa.users.earthengine.
 <img src="/Images/Figure4.png" alt="VICAL"/>
 
 The VICAL tool has three main functions: (i) calculation of 23 VIs with images (cloud-free) from Landsat (4, 5, 7, 8 and 9) and Sentinel-2 data from any user-defined area; (ii) VI time series plot for each polygon drawn by the user with Landsat and Sentinel-2 or both satellites, and iii) Regression maps (linear, quadratic, potential or exponential function) using VIs values. 
-<img src="/Images/Figure12.png" alt="digitized polygons in VICAL"/>
+<img src="/Images/Figure12.PNG" alt="digitized polygons in VICAL"/>
 <img src="/Images/Figure51.png" alt="RGB IMAGE"/>
 <img src="/Images/Figure52.png" alt="NDVI"/>
+<img src="/Images/Figure56.png" alt="Regression Map"/>
