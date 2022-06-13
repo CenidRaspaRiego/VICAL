@@ -1,0 +1,357 @@
+//VEGETATION INDEX, 
+//Some VI functions that can be configured are in the VICAL file
+exports.ARVI= function (imagen) // 1. arvi
+{
+  var arvi = imagen.expression(
+    'float(NIR-(R-Y*(B-R)))/(NIR+(R-Y*(B-R)))',{
+    NIR : imagen.select('nir'),
+    R : imagen.select('red'),
+    B: imagen.select('blue'),
+    Y  : ee.Image(1.0),
+    });
+    arvi = arvi.rename(['ARVI']).float().copyProperties(imagen, 
+      ["system:time_start", "satelite", "sensor", "tile", ]);
+    return arvi;
+};
+exports.ATSAVI= function (imagen) // 2. ATSAVI
+{
+  var atsavi = imagen.expression(
+  '(a*(NIR-a*R-b) / (R+a*NIR-a*b+X*(1+a**2)))',
+  {
+    R   : imagen.select('red'),
+    NIR : imagen.select('nir'),
+    a   : ee.Image(1.0),
+    b   : ee.Image(0.0),  
+    X   : ee.Image(0.08),
+  });
+  atsavi = atsavi.rename(['ATSAVI']).copyProperties(imagen, 
+    ["system:time_start", "satelite", "sensor", "tile"]);
+  return atsavi;
+};
+exports.DVI = function(imagen) //3.  DVI
+{
+  var dvi = imagen.expression(
+    '(NIR-RED)',{
+    NIR : imagen.select('nir'),
+    RED : imagen.select('red'),
+    });
+    dvi = dvi.rename(['DVI']).float().copyProperties(imagen, 
+      ["system:time_start", "satelite", "sensor", "tile"]);
+    return dvi;
+};
+//Enhanced Vegetation index
+exports.EVI = function(imagen) //4. EVI
+{
+  var evi = imagen.expression(
+    '2.5*(NIR-RED)/(NIR+C1*RED-C2*BLUE+L)',{
+    NIR : imagen.select('nir'),
+    RED : imagen.select('red'),
+    BLUE: imagen.select('blue'),
+    C1: ee.Image(6.0),
+    C2: ee.Image(7.5),
+    L : ee.Image(1.0)
+    });
+    evi = evi.rename(['EVI']).float().copyProperties(imagen, 
+      ["system:time_start", "satelite", "sensor", "tile"]);
+    return evi;
+};
+
+//Enhanced Vegetation index
+exports.EVI2 = function(imagen) // 5. EVI2
+{
+  var evi2 = imagen.expression(
+    '2.5*(NIR-RED)/(NIR+C1*RED+1)',{
+    NIR : imagen.select('nir'),
+    RED : imagen.select('red'),
+    C1: ee.Image(2.4),
+    });
+    evi2 = evi2.rename(['EVI2']).float().copyProperties(imagen, 
+      ["system:time_start", "satelite", "sensor", "tile"]);
+    return evi2;
+};
+
+// Cálculo del Green Normalized Difference Vegetation Index (GNDVI)
+exports.GNDVI = function(imagen) // 6. GNDVI
+{
+  var gndvi = imagen.normalizedDifference(['nir', 'green']);
+  gndvi = gndvi.rename(['GNDVI']).copyProperties(imagen, 
+              ["system:time_start", "satelite", "sensor", "tile"]);
+  return gndvi;
+};
+// Cálculo del Modified Soil Adjusted Vegetation Index
+exports.MSAVI2 = function(imagen) // 7. MSAVI2
+{
+  var msavi = imagen.expression(
+  '0.5*((2*NIR + 1)-((2*NIR+1)**2-8*(NIR-R))**0.5)',
+  {
+    R   : imagen.select('red'),
+    NIR : imagen.select('nir'),
+  });
+  msavi =msavi.rename(['MSAVI2']).copyProperties(imagen, 
+    ["system:time_start", "satelite", "sensor", "tile"]);
+  return msavi;
+};
+// Cálculo del Moisture Stress Index (MSI)
+// MSI = SWIR1/NIR
+exports.MSI = function(imagen) //8. MSI
+{
+  var msi = imagen.expression(
+    '((SWIR1/NIR) > 2.0) ? 2.0 : SWIR1/NIR',
+    {
+      SWIR1 : imagen.select('swir1'),
+      NIR : imagen.select('nir')
+    });
+    
+    msi = msi.rename(['MSI']).float().copyProperties(imagen, 
+      ["system:time_start", "satelite", "sensor", "tile"]);
+  return msi;
+};
+// Cálculo del Moisture Stress Index (MTVI)
+exports.MTVI = function(imagen) // 9. MTVI
+{
+  var mtvi = imagen.expression(
+    '1.2*(1.2*(NIR-G)-2.5*(R-G))',{
+    NIR : imagen.select('nir'),
+    R   : imagen.select('red'),
+    G   : imagen.select('green'),
+    });
+    mtvi = mtvi.rename(['MTVI']).float().copyProperties(imagen, 
+      ["system:time_start", "satelite", "sensor", "tile"]);
+    return mtvi;
+};
+// Cálculo del Moisture Stress Index (MTVI2)
+exports.MTVI2 = function(imagen) //10. MTVI2
+{
+  var mtvi2 = imagen.expression(
+    '(1.5*(1.2*(NIR-G)-2.5*(R-G)))/((2*NIR+1)**2-(6*NIR-5*(R)**0.5)-0.5)**0.5',{
+    NIR : imagen.select('nir'),
+    R   : imagen.select('red'),
+    G   : imagen.select('green'),
+    });
+    mtvi2 = mtvi2.rename(['MTVI2']).float().copyProperties(imagen, 
+      ["system:time_start", "satelite", "sensor", "tile"]);
+    return mtvi2;
+};
+// Cálculo del Normalized Difference Tillage Index (NDTI)
+exports.NDTI = function(imagen) // 11. NDTI
+{
+  var ndti = imagen.normalizedDifference(['swir1', 'swir2']);
+  ndti = ndti.rename(['NDTI']).copyProperties(imagen, 
+              ["system:time_start", "satelite", "sensor", "tile"]);
+  return ndti;
+};
+// Cálculo del Normalized Difference Vegetation Index (NDVI)
+exports.NDVI = function(imagen) // 12. NDVI
+{
+  var ndvi = imagen.normalizedDifference(['nir', 'red']);
+  ndvi = ndvi.rename(['NDVI']).copyProperties(imagen, 
+              ["system:time_start", "satelite", "sensor", "tile"]);
+  return ndvi;
+};
+// Cálculo del Normalized Difference Vegetation Index (NDVI)
+exports.NDVI_AB = function(imagen)
+{
+  var ndvi3 = imagen.normalizedDifference(['nir', 'red']);
+      ndvi3 = ndvi3.rename(['NDVImax']).copyProperties(imagen, 
+              ["system:time_start", "satelite", "sensor", "tile"]);
+  var ndvi4 = imagen.normalizedDifference(['nir', 'red']);
+      ndvi4 = ndvi4.rename(['NDVImin']).copyProperties(imagen, 
+              ["system:time_start", "satelite", "sensor", "tile"]);             
+  return imagen.addBands([ndvi3,ndvi4]);
+};
+// Cálculo del Normalized Difference Water Index (NDWI)
+exports.NDWI = function(imagen) // 13. NDWI
+{
+  var ndwi = imagen.normalizedDifference(['nir', 'swir1']);
+  ndwi = ndwi.rename(['NDWI']).copyProperties(imagen, 
+              ["system:time_start", "satelite", "sensor", "tile"]);
+  return ndwi;
+};
+// Cálculo del Optimized Soil Adjusted Vegetation Index (OSAVI) x=0.16
+exports.OSAVI = function(imagen) //14. OSAVI
+{
+ 
+  var osavi = imagen.expression(
+  '((NIR - RED) / (NIR + RED + X))',
+  {
+    RED : imagen.select('red'),
+    NIR : imagen.select('nir'),
+    X   : ee.Image(0.16),
+  });
+  osavi = osavi.rename(['OSAVI']).copyProperties(imagen, 
+    ["system:time_start", "satelite", "sensor", "tile"]);
+  return osavi;
+};
+//Renormalized Difference Vegetation Index
+exports.RDVI = function(imagen) // 15. RDVI
+{
+  var rdvi = imagen.expression(
+  '((NIR - RED) / (NIR + RED )**0.5)',
+  {
+    RED : imagen.select('red'),
+    NIR : imagen.select('nir'),
+  });
+  rdvi = rdvi.rename(['RDVI']).copyProperties(imagen, 
+    ["system:time_start", "satelite", "sensor", "tile"]);
+  return rdvi;
+};
+// Cálculo del Redness Index
+// Cálculo del 13	Redness Index (RI)
+exports.RI = function(imagen) //16. RI
+{
+  var ri = imagen.normalizedDifference(['red', 'green']);
+  ri = ri.rename(['RI']).copyProperties(imagen, 
+              ["system:time_start", "satelite", "sensor", "tile"]);
+  return ri;
+};
+// Cálculo del Ratio Vegetation Index
+exports.RVI = function(imagen) // 17. RVI
+{
+  var rvi = imagen.expression(
+    'R/NIR',
+    {
+      R : imagen.select('red'),
+      NIR : imagen.select('nir')
+    });
+    
+    rvi = rvi.rename(['RVI']).float().copyProperties(imagen, 
+      ["system:time_start", "satelite", "sensor", "tile"]);
+  return rvi;
+};
+exports.SAVI= function (imagen) //18. SAVI
+{
+  var savi = imagen.expression(
+  '((1+L) * (NIR - RED) / (L + NIR + RED))',
+  {
+    RED : imagen.select('red'),
+    NIR : imagen.select('nir'),
+    L   : ee.Image(0.5),
+  });
+  savi = savi.rename(['SAVI']).copyProperties(imagen, 
+    ["system:time_start", "satelite", "sensor", "tile"]);
+  return savi;
+};
+exports.TVI = function(imagen) //19.  TVI
+{
+  var tvi = imagen.expression(
+  '0.5*(120*(NIR-G)-200*(R-G))',
+  {
+    G   :imagen.select('green'),
+    R   :imagen.select('red'),
+    NIR : imagen.select('nir'),
+  });
+  tvi = tvi.rename(['TVI']).copyProperties(imagen, 
+    ["system:time_start", "satelite", "sensor", "tile"]);
+  return tvi;
+};
+exports.TSAVI= function(imagen) //20. TSAVI
+{
+  var tsavi = imagen.expression(
+  '(a*(NIR-a*R-b) / (R+a*NIR-a*b))',
+  {
+    R   : imagen.select('red'),
+    NIR : imagen.select('nir'),
+    a   : ee.Image(1.0),
+    b   : ee.Image(0.0), 
+  });
+  tsavi = tsavi.rename(['TSAVI']).copyProperties(imagen, 
+    ["system:time_start", "satelite", "sensor", "tile"]);
+  return tsavi;
+};
+
+// Cálculo del Visible Atmospherically Resistant Index
+exports.VARI = function(imagen) // 21. VARI
+{
+  var vari = imagen.expression(
+  '( (G - R) / (G + R - B))',
+  {
+    R : imagen.select('red'),
+    G : imagen.select('green'),
+    B : imagen.select('blue')
+  });
+  vari = vari.rename(['VARI']).copyProperties(imagen, 
+    ["system:time_start", "satelite", "sensor", "tile"]);
+  return vari;
+};
+// Cálculo del Visible Atmospherically Resistant Index
+exports.VCI = function(imagen)
+{
+  var vci = imagen.expression(
+  'NDVIma/100*100', //(NDVI-NDVIm)/(NDVIma-NDVIm)*100',
+  {
+    NDVI :imagen.select('NDVI'),
+    NDVIm : imagen.select('min'),
+    NDVIma : imagen.select('max') 
+  });
+  vci = vci.rename(['VCI']).copyProperties(imagen, 
+    ["system:time_start", "satelite", "sensor", "tile"]);
+  return vci;
+};
+
+// Cálculo del Vegetation Index Number (VIN)
+exports.VIN = function(imagen) // 22. VIN
+{
+  var rvi = imagen.expression(
+    'NIR/R',
+    {
+      R : imagen.select('red'),
+      NIR : imagen.select('nir')
+    });
+    
+    rvi = rvi.rename(['VIN']).float().copyProperties(imagen, 
+      ["system:time_start", "satelite", "sensor", "tile"]);
+  return rvi;
+};
+// Cálculo del Wide Dynamic Range Vegetation Index (WDRVI)
+exports.WDRVI = function(imagen) //23. WDRVI
+{
+  var wdrvi = imagen.expression(
+  '((a*NIR - RED) / (a*NIR + RED))',
+  {
+    RED : red,
+    NIR : nir,
+    a   : ee.Image(0.2), 
+  });
+  wdrvi = wdrvi.rename(['WDRVI']).copyProperties(imagen, 
+    ["system:time_start", "satelite", "sensor", "tile"]);
+  return wdrvi;
+};
+
+// Índice de clorofila de rojo extremo (Cl Red Edge)
+exports.ClRedEdge = function(imagen)
+{
+  var clre = imagen.expression(
+    '(RE3/RE1) - 1.0',
+    {
+      RE3 : imagen.select('redE3'),
+      RE1 : imagen.select('redE1')
+    });
+    clre = clre.rename(['ClRedEdge']).float().copyProperties(imagen, 
+      ["system:time_start", "satelite", "sensor", "tile"]);
+    return clre;
+};
+
+exports.ProdRelativa = function(indice, poligonos, nombre)
+{
+  var media = indice.reduceRegions({
+    collection  : poligonos,
+    reducer : ee.Reducer.mean(),
+    scale : 10
+  });
+
+  var mediaI = media.filter(ee.Filter.notNull(['mean']))
+    .reduceToImage({
+      properties: ['mean'],
+      reducer: ee.Reducer.first()
+  });
+
+  indice = indice.clip(poligonos);
+  var prod = indice.divide(mediaI).rename(nombre);
+  prod = prod.copyProperties(indice, indice.propertyNames());
+  var geom = ee.Geometry(indice.get('system:footprint'));
+  prod = prod.set('system:footprint', geom);
+  return prod;
+};
+
+
+
