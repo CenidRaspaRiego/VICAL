@@ -1,6 +1,6 @@
 /* COMMENTS ON THE APPLICATION
         Application to determine vegetation indices in agricultural parcel
-        Created by INIFAP CENID RASPA 2021 
+        Created by INIFAP CENID RASPA 2022 
         contacto: jimenez.sergio@inifap.gob.mx
 */
  
