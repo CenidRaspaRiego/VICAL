@@ -4,6 +4,8 @@ VICAL is a open-source implementation to calculate 23 VIs map (VIs commonly used
 
 A web application is also available (https://inifapcenidraspa.users.earthengine.app/view/vical).
 
+The VICAL help section is available at: (https://cenidraspariego.github.io/vical_en/)
+
 The VICAL help section in Spanish is available at: (https://serchjimenez09.github.io/VICAL_B/)
 
 <img src="/Images/Figure4.png" alt="VICAL"/>
