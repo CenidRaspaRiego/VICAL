@@ -8,7 +8,7 @@ The VICAL help section is available at: (https://cenidraspariego.github.io/vical
 
 The VICAL help section in Spanish is available at: (https://serchjimenez09.github.io/VICAL_B/)
 
-<img src="/Images/Figure4.png" alt="VICAL"/>
+<img src="/Images/Figure4.PNG" alt="VICAL"/>
 
 
 
